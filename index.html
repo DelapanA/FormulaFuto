@@ -7,153 +7,157 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Roboto', sans-serif; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-image: url('https://images.unsplash.com/photo-1571607388067-22da62f69f03?auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      backdrop-filter: blur(6px);
+    }
     h1, h2 { font-family: 'Orbitron', sans-serif; }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+    }
   </style>
   <script>
     function toggleTheme() {
       document.documentElement.classList.toggle('dark');
     }
 
-    function updateCountdown() {
-      const target = new Date("July 7, 2025 20:00:00 GMT+0700");
+    const sessions = [
+      { id: 'fp1', label: 'FP1', start: 'July 5, 2025 18:00:00 GMT+0700', end: 'July 5, 2025 19:00:00 GMT+0700' },
+      { id: 'fp2', label: 'FP2', start: 'July 5, 2025 21:00:00 GMT+0700', end: 'July 5, 2025 22:00:00 GMT+0700' },
+      { id: 'fp3', label: 'FP3', start: 'July 6, 2025 17:00:00 GMT+0700', end: 'July 6, 2025 18:00:00 GMT+0700' },
+      { id: 'qualifying', label: 'Kualifikasi', start: 'July 6, 2025 20:00:00 GMT+0700', end: 'July 6, 2025 21:00:00 GMT+0700' },
+      { id: 'race', label: 'Balapan', start: 'July 7, 2025 20:00:00 GMT+0700', end: 'July 7, 2025 22:00:00 GMT+0700' },
+    ];
+
+    function updateCountdowns() {
       const now = new Date();
-      const diff = target - now;
+      sessions.forEach(session => {
+        const start = new Date(session.start);
+        const end = new Date(session.end);
+        const elem = document.getElementById(session.id);
+        if (!elem) return;
 
-      if (diff <= 0) {
-        document.getElementById("countdown").innerText = "Race is Live!";
-        return;
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      document.getElementById("countdown").innerText =
-        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        if (now < start) {
+          const diff = start - now;
+          const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((diff % (1000 * 60)) / 1000);
+          elem.innerText = `Mulai dalam: ${d}d ${h}h ${m}m ${s}s`;
+        } else if (now >= start && now < end) {
+          elem.innerText = `Sedang berlangsung!`;
+        } else {
+          elem.innerText = `Selesai`;
+        }
+      });
     }
 
-    setInterval(updateCountdown, 1000);
-    window.onload = function () {
-      const loader = document.getElementById('loader');
-      setTimeout(() => {
-        loader.classList.add('opacity-0');
-        setTimeout(() => loader.style.display = 'none', 300);
-        updateCountdown();
-      }, 400); // dipercepat dari 1500 ke 400ms
-    };
+    setInterval(updateCountdowns, 1000);
+    window.onload = updateCountdowns;
   </script>
 </head>
-<body class="bg-white text-black dark:bg-gray-900 dark:text-white transition duration-300">
-  <!-- Loader -->
-  <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center bg-black text-white text-3xl font-bold transition-opacity duration-500">
-    Loading F1 Tracker...
+<body class="text-white dark:text-white transition duration-300">
+  <div class="overlay min-h-screen">
+    <header class="flex items-center justify-between p-4 shadow-md">
+      <h1 class="text-2xl animate-pulse">F1 2025: Tracker Verstappen</h1>
+      <button onclick="toggleTheme()" class="px-4 py-2 bg-gray-200 text-black dark:bg-gray-800 dark:text-white rounded-xl">Toggle Mode</button>
+    </header>
+
+    <main class="p-4 space-y-10">
+      <section class="text-center">
+        <h2 class="text-xl font-semibold mb-2">Jadwal & Hitung Mundur Sesi</h2>
+        <ul class="space-y-3 text-lg">
+          <li><strong>FP1</strong> - 5 Juli 18:00 WIB → <span id="fp1"></span></li>
+          <li><strong>FP2</strong> - 5 Juli 21:00 WIB → <span id="fp2"></span></li>
+          <li><strong>FP3</strong> - 6 Juli 17:00 WIB → <span id="fp3"></span></li>
+          <li><strong>Kualifikasi</strong> - 6 Juli 20:00 WIB → <span id="qualifying"></span></li>
+          <li><strong>Balapan</strong> - 7 Juli 20:00 WIB → <span id="race"></span></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold mb-2">Klasemen Pembalap</h2>
+        <table class="w-full table-auto border-collapse border border-white">
+          <thead>
+            <tr class="bg-gray-800">
+              <th class="border border-white px-2 py-1">Pos</th>
+              <th class="border border-white px-2 py-1">Pembalap</th>
+              <th class="border border-white px-2 py-1">Tim</th>
+              <th class="border border-white px-2 py-1">Poin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border px-2 py-1">1</td>
+              <td class="border px-2 py-1">Oscar Piastri</td>
+              <td class="border px-2 py-1">McLaren</td>
+              <td class="border px-2 py-1">216</td>
+            </tr>
+            <tr>
+              <td class="border px-2 py-1">2</td>
+              <td class="border px-2 py-1">Lando Norris</td>
+              <td class="border px-2 py-1">McLaren</td>
+              <td class="border px-2 py-1">201</td>
+            </tr>
+            <tr class="bg-yellow-600">
+              <td class="border px-2 py-1">3</td>
+              <td class="border px-2 py-1 font-semibold">Max Verstappen</td>
+              <td class="border px-2 py-1">Red Bull</td>
+              <td class="border px-2 py-1">155</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold mb-2">Update & Rumor Upgrade Red Bull</h2>
+        <ul class="list-disc ml-6 space-y-1">
+          <li>Upgrade floor dan sidepod final akan diuji di Silverstone</li>
+          <li>Suspensi depan diubah untuk stabilitas masuk tikungan</li>
+          <li>Target utama: tingkatkan grip belakang dan kurangi degradasi ban</li>
+          <li>Jika gagal, Red Bull kemungkinan hentikan pengembangan 2025</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold mb-2">Statistik: Verstappen vs Piastri (2025)</h2>
+        <table class="w-full table-auto border border-white">
+          <thead>
+            <tr class="bg-gray-800">
+              <th class="border px-2 py-1">Kategori</th>
+              <th class="border px-2 py-1">Verstappen</th>
+              <th class="border px-2 py-1">Piastri</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border px-2 py-1">Menang Balapan</td>
+              <td class="border px-2 py-1">3</td>
+              <td class="border px-2 py-1">5</td>
+            </tr>
+            <tr>
+              <td class="border px-2 py-1">Pole Position</td>
+              <td class="border px-2 py-1">2</td>
+              <td class="border px-2 py-1">4</td>
+            </tr>
+            <tr>
+              <td class="border px-2 py-1">Fastest Lap</td>
+              <td class="border px-2 py-1">3</td>
+              <td class="border px-2 py-1">4</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer class="p-4 text-center text-sm text-gray-300">
+      Dibuat oleh ChatGPT untuk pelacakan Max Verstappen F1 2025
+    </footer>
   </div>
-
-  <header class="flex items-center justify-between p-4 shadow-md dark:shadow-gray-700">
-    <h1 class="text-2xl animate-pulse">F1 2025: Tracker Verstappen</h1>
-    <button onclick="toggleTheme()" class="px-4 py-2 bg-gray-200 dark:bg-gray-800 rounded-xl">Toggle Mode</button>
-  </header>
-
-  <main class="p-4 space-y-10">
-    <!-- Countdown Timer -->
-    <section class="text-center">
-      <h2 class="text-xl font-semibold mb-2 animate-fade-in">⏱️ Hitung Mundur ke GP Inggris (Silverstone)</h2>
-      <p id="countdown" class="text-3xl font-mono text-red-600 dark:text-yellow-400 animate-bounce"></p>
-    </section>
-
-    <!-- Klasemen Pembalap -->
-    <section class="animate-fade-in-up">
-      <h2 class="text-xl font-semibold mb-2">Klasemen Pembalap</h2>
-      <table class="w-full table-auto border-collapse border border-gray-400 dark:border-gray-600">
-        <thead>
-          <tr class="bg-gray-100 dark:bg-gray-800">
-            <th class="border border-gray-400 px-2 py-1">Pos</th>
-            <th class="border border-gray-400 px-2 py-1">Pembalap</th>
-            <th class="border border-gray-400 px-2 py-1">Tim</th>
-            <th class="border border-gray-400 px-2 py-1">Poin</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="border px-2 py-1">1</td>
-            <td class="border px-2 py-1">Oscar Piastri</td>
-            <td class="border px-2 py-1">McLaren</td>
-            <td class="border px-2 py-1">216</td>
-          </tr>
-          <tr>
-            <td class="border px-2 py-1">2</td>
-            <td class="border px-2 py-1">Lando Norris</td>
-            <td class="border px-2 py-1">McLaren</td>
-            <td class="border px-2 py-1">201</td>
-          </tr>
-          <tr class="bg-yellow-100 dark:bg-yellow-800">
-            <td class="border px-2 py-1">3</td>
-            <td class="border px-2 py-1 font-semibold">Max Verstappen</td>
-            <td class="border px-2 py-1">Red Bull</td>
-            <td class="border px-2 py-1">155</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Jadwal Balapan Berikutnya -->
-    <section class="animate-fade-in-up">
-      <h2 class="text-xl font-semibold mb-2">Jadwal Balapan Berikutnya</h2>
-      <ul class="list-disc ml-6">
-        <li><strong>GP Inggris (Silverstone)</strong> - Minggu, 7 Juli 2025 - Pukul 20:00 WIB</li>
-        <li>FP1: Jumat, 5 Juli - 18:00 WIB</li>
-        <li>FP2: Jumat, 5 Juli - 21:00 WIB</li>
-        <li>FP3 & Kualifikasi: Sabtu, 6 Juli - 17:00 & 20:00 WIB</li>
-      </ul>
-    </section>
-
-    <!-- Berita & Rumor Upgrade -->
-    <section class="animate-fade-in-up">
-      <h2 class="text-xl font-semibold mb-2">Update dan Rumor Upgrade Red Bull</h2>
-      <ul class="list-disc ml-6 space-y-1">
-        <li>Upgrade floor dan sidepod final akan diuji di Silverstone</li>
-        <li>Suspensi depan diubah untuk stabilitas masuk tikungan</li>
-        <li>Target utama: tingkatkan grip belakang dan kurangi degradasi ban</li>
-        <li>Jika gagal, Red Bull kemungkinan hentikan pengembangan 2025</li>
-      </ul>
-    </section>
-
-    <!-- Statistik Verstappen vs Piastri -->
-    <section class="animate-fade-in-up">
-      <h2 class="text-xl font-semibold mb-2">Statistik: Verstappen vs Piastri (2025)</h2>
-      <table class="w-full table-auto border border-gray-400 dark:border-gray-600">
-        <thead>
-          <tr class="bg-gray-100 dark:bg-gray-800">
-            <th class="border px-2 py-1">Kategori</th>
-            <th class="border px-2 py-1">Verstappen</th>
-            <th class="border px-2 py-1">Piastri</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="border px-2 py-1">Menang Balapan</td>
-            <td class="border px-2 py-1">3</td>
-            <td class="border px-2 py-1">5</td>
-          </tr>
-          <tr>
-            <td class="border px-2 py-1">Pole Position</td>
-            <td class="border px-2 py-1">2</td>
-            <td class="border px-2 py-1">4</td>
-          </tr>
-          <tr>
-            <td class="border px-2 py-1">Fastest Lap</td>
-            <td class="border px-2 py-1">3</td>
-            <td class="border px-2 py-1">4</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-  </main>
-
-  <footer class="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
-    Dibuat oleh ChatGPT untuk pelacakan Max Verstappen F1 2025
-  </footer>
 </body>
 </html>
