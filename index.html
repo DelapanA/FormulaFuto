@@ -21,45 +21,46 @@
       backdrop-filter: blur(4px);
     }
   </style>
-  <script>
+<script>
     function toggleTheme() {
       document.documentElement.classList.toggle('dark');
     }
 
     const sessions = [
-      { id: 'fp1', label: 'FP1', start: 'July 5, 2025 18:00:00 GMT+0700', end: 'July 5, 2025 19:00:00 GMT+0700' },
-      { id: 'fp2', label: 'FP2', start: 'July 5, 2025 21:00:00 GMT+0700', end: 'July 5, 2025 22:00:00 GMT+0700' },
-      { id: 'fp3', label: 'FP3', start: 'July 6, 2025 17:00:00 GMT+0700', end: 'July 6, 2025 18:00:00 GMT+0700' },
-      { id: 'qualifying', label: 'Kualifikasi', start: 'July 6, 2025 20:00:00 GMT+0700', end: 'July 6, 2025 21:00:00 GMT+0700' },
-      { id: 'race', label: 'Balapan', start: 'July 7, 2025 20:00:00 GMT+0700', end: 'July 7, 2025 22:00:00 GMT+0700' },
+      { label: 'FP1', start: 'July 5, 2025 18:00:00 GMT+0700', end: 'July 5, 2025 19:00:00 GMT+0700' },
+      { label: 'FP2', start: 'July 5, 2025 21:00:00 GMT+0700', end: 'July 5, 2025 22:00:00 GMT+0700' },
+      { label: 'FP3', start: 'July 6, 2025 17:00:00 GMT+0700', end: 'July 6, 2025 18:00:00 GMT+0700' },
+      { label: 'Kualifikasi', start: 'July 6, 2025 20:00:00 GMT+0700', end: 'July 6, 2025 21:00:00 GMT+0700' },
+      { label: 'Balapan', start: 'July 7, 2025 20:00:00 GMT+0700', end: 'July 7, 2025 22:00:00 GMT+0700' },
     ];
 
-    function updateCountdowns() {
+    let currentSessionIndex = 0;
+    function updateSingleCountdown() {
       const now = new Date();
-      sessions.forEach(session => {
-        const start = new Date(session.start);
-        const end = new Date(session.end);
-        const elem = document.getElementById(session.id);
-        if (!elem) return;
+      if (currentSessionIndex >= sessions.length) return;
+      const session = sessions[currentSessionIndex];
+      const start = new Date(session.start);
+      const end = new Date(session.end);
+      const display = document.getElementById("singleCountdown");
 
-        if (now < start) {
-          const diff = start - now;
-          const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-          const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const s = Math.floor((diff % (1000 * 60)) / 1000);
-          elem.innerText = `Mulai dalam: ${d}d ${h}h ${m}m ${s}s`;
-        } else if (now >= start && now < end) {
-          elem.innerText = `Sedang berlangsung!`;
-        } else {
-          elem.innerText = `Selesai`;
-        }
-      });
+      if (now < start) {
+        const diff = start - now;
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        display.innerText = `${session.label} dimulai dalam: ${d}d ${h}h ${m}m ${s}s`;
+      } else if (now >= start && now < end) {
+        display.innerText = `${session.label} sedang berlangsung!`;
+      } else {
+        currentSessionIndex++;
+        updateSingleCountdown();
+      }
     }
 
-    setInterval(updateCountdowns, 1000);
-    window.onload = updateCountdowns;
-  </script>
+    setInterval(updateSingleCountdown, 1000);
+    window.onload = updateSingleCountdown;
+</script>
 </head>
 <body class="text-white dark:text-white transition duration-300">
   <div class="overlay min-h-screen">
