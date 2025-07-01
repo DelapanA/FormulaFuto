@@ -1,25 +1,70 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id" class="light scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>F1 2025 - Tracker Verstappen</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Roboto', sans-serif; }
+    h1, h2 { font-family: 'Orbitron', sans-serif; }
+  </style>
   <script>
     function toggleTheme() {
       document.documentElement.classList.toggle('dark');
     }
+
+    function updateCountdown() {
+      const target = new Date("July 7, 2025 20:00:00 GMT+0700");
+      const now = new Date();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        document.getElementById("countdown").innerText = "Race is Live!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").innerText =
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    setInterval(updateCountdown, 1000);
+    window.onload = function () {
+      const loader = document.getElementById('loader');
+      setTimeout(() => {
+        loader.classList.add('opacity-0');
+        setTimeout(() => loader.style.display = 'none', 300);
+        updateCountdown();
+      }, 400); // dipercepat dari 1500 ke 400ms
+    };
   </script>
 </head>
 <body class="bg-white text-black dark:bg-gray-900 dark:text-white transition duration-300">
+  <!-- Loader -->
+  <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center bg-black text-white text-3xl font-bold transition-opacity duration-500">
+    Loading F1 Tracker...
+  </div>
+
   <header class="flex items-center justify-between p-4 shadow-md dark:shadow-gray-700">
-    <h1 class="text-2xl font-bold">F1 2025: Tracker Verstappen</h1>
+    <h1 class="text-2xl animate-pulse">F1 2025: Tracker Verstappen</h1>
     <button onclick="toggleTheme()" class="px-4 py-2 bg-gray-200 dark:bg-gray-800 rounded-xl">Toggle Mode</button>
   </header>
 
   <main class="p-4 space-y-10">
+    <!-- Countdown Timer -->
+    <section class="text-center">
+      <h2 class="text-xl font-semibold mb-2 animate-fade-in">⏱️ Hitung Mundur ke GP Inggris (Silverstone)</h2>
+      <p id="countdown" class="text-3xl font-mono text-red-600 dark:text-yellow-400 animate-bounce"></p>
+    </section>
+
     <!-- Klasemen Pembalap -->
-    <section>
+    <section class="animate-fade-in-up">
       <h2 class="text-xl font-semibold mb-2">Klasemen Pembalap</h2>
       <table class="w-full table-auto border-collapse border border-gray-400 dark:border-gray-600">
         <thead>
@@ -54,7 +99,7 @@
     </section>
 
     <!-- Jadwal Balapan Berikutnya -->
-    <section>
+    <section class="animate-fade-in-up">
       <h2 class="text-xl font-semibold mb-2">Jadwal Balapan Berikutnya</h2>
       <ul class="list-disc ml-6">
         <li><strong>GP Inggris (Silverstone)</strong> - Minggu, 7 Juli 2025 - Pukul 20:00 WIB</li>
@@ -65,7 +110,7 @@
     </section>
 
     <!-- Berita & Rumor Upgrade -->
-    <section>
+    <section class="animate-fade-in-up">
       <h2 class="text-xl font-semibold mb-2">Update dan Rumor Upgrade Red Bull</h2>
       <ul class="list-disc ml-6 space-y-1">
         <li>Upgrade floor dan sidepod final akan diuji di Silverstone</li>
@@ -76,7 +121,7 @@
     </section>
 
     <!-- Statistik Verstappen vs Piastri -->
-    <section>
+    <section class="animate-fade-in-up">
       <h2 class="text-xl font-semibold mb-2">Statistik: Verstappen vs Piastri (2025)</h2>
       <table class="w-full table-auto border border-gray-400 dark:border-gray-600">
         <thead>
