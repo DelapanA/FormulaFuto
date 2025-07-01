@@ -1,0 +1,24 @@
+name: Auto Update F1 Data
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # Setiap hari pukul 12:00 UTC (19:00 WIB)
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm install
+      - run: npm start
+      - name: Commit and Push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add index.html
+          git commit -m "🔄 Auto-update klasemen F1"
+          git push
