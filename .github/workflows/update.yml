@@ -19,6 +19,5 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add index.html
-          git commit -m "🔄 Auto-update klasemen F1"
-          git push
+          git add -A
+          git diff --cached --quiet || (git commit -m "🔄 Auto-update klasemen F1" && git push)
