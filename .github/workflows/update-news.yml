@@ -19,9 +19,11 @@ jobs:
       run: node fetch-redbull-news.js
     - name: Commit & Push
       run: |
-        git config user.name "github-actions"
-        git config user.email "github-actions@github.com"
-        git add redbull-news.json || true
-        git diff --cached --quiet || git commit -m "Update Red Bull news automatically"
-        git pull --rebase origin main
-        git push
+       git config user.name "github-actions"
+       git config user.email "github-actions@github.com"
+       git add redbull-news.json || true
+       git diff --cached --quiet || git commit -m "Update Red Bull news automatically"
+       git stash
+       git pull origin main
+       git stash pop || true
+       git push
