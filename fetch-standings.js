@@ -1,21 +1,40 @@
-
-const axios = require('axios');
+const Parser = require('rss-parser');
 const fs = require('fs');
 
-const url = 'https://ergast.com/api/f1/current/driverStandings.json';
+const parser = new Parser();
+const sources = [
+  {
+    name: "GPFans",
+    url: "https://www.gpfans.com/en/rss/",
+    filter: /red bull|verstappen/i
+  },
+  {
+    name: "F1NewsUK",
+    url: "https://www.formula1news.co.uk/feed/",
+    filter: /red bull|verstappen/i
+  }
+];
 
-axios.get(url)
-  .then(response => {
-    const standings = response.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
-    const output = standings.map((driver, index) => ({
-      pos: index + 1,
-      driver: `${driver.Driver.givenName} ${driver.Driver.familyName}`,
-      team: driver.Constructors[0].name,
-      points: driver.points
-    }));
-    fs.writeFileSync('standings.json', JSON.stringify(output, null, 2));
-    console.log('Standings updated successfully!');
-  })
-  .catch(error => {
-    console.error('Failed to fetch standings:', error);
-  });
+(async () => {
+  let allItems = [];
+
+  for (const source of sources) {
+    try {
+      const feed = await parser.parseURL(source.url);
+      const filtered = feed.items
+        .filter(item => source.filter.test(item.title))
+        .slice(0, 3)
+        .map(item => ({
+          title: item.title,
+          source: source.name,
+          url: item.link,
+          date: item.pubDate || new Date().toISOString().split('T')[0]
+        }));
+      allItems.push(...filtered);
+    } catch (err) {
+      console.error("Error fetching", source.name, err.message);
+    }
+  }
+
+  fs.writeFileSync("redbull-news.json", JSON.stringify(allItems, null, 2));
+})();
