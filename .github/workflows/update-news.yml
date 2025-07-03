@@ -10,16 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Repo
+      uses: actions/checkout@v3
 
-    - name: Install Puppeteer dependencies (Ubuntu 24.04 fix)
+    - name: Install Puppeteer dependencies (Ubuntu 24.04 Fix)
       run: |
-       sudo apt-get update
-       sudo apt-get install -y \
-       libxshmfence-dev libgbm-dev libxss1 libasound2t64 \
-       libatk-bridge2.0-0 libnss3 ca-certificates fonts-liberation \
-       libappindicator3-1 libatk1.0-0 libcups2 libdbus-1-3 \
-       libgdk-pixbuf2.0-0 libnspr4 libx11-xcb1 lsb-release xdg-utils wget
+        sudo apt-get update
+        sudo apt-get install -y \
+          libxshmfence-dev libgbm-dev libxss1 libasound2t64 \
+          libatk-bridge2.0-0 libnss3 ca-certificates fonts-liberation \
+          libappindicator3-1 libatk1.0-0 libcups2 libdbus-1-3 \
+          libgdk-pixbuf2.0-0 libnspr4 libx11-xcb1 lsb-release xdg-utils wget
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -37,7 +38,7 @@ jobs:
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git add redbull-news.json || true
-        git diff --cached --quiet || git commit -m "Update Red Bull news (Puppeteer)"
+        git diff --cached --quiet || git commit -m "Update Red Bull news (multi-source Puppeteer)"
         git stash
         git pull origin main
         git stash pop || true
