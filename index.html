@@ -230,7 +230,9 @@ fetch('redbull-news.json')
         <a href="${item.url}" target="_blank" class="text-yellow-300 underline hover:text-yellow-200 transition">
           ${item.title}
         </a>
-        <span class="text-gray-400 ml-2">(${item.date})</span>
+        <span class="text-gray-400 ml-2">
+          (${item.date}${item.source ? ', ' + item.source : ''})
+        </span>
       `;
       list.appendChild(li);
     });
