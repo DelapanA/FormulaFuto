@@ -7,10 +7,10 @@ const sources = [
     name: 'GPFans',
     url: 'https://www.gpfans.com/en/news/',
     base: 'https://www.gpfans.com',
-    selector: '.ArticleItem',
-    title: el => el.find('.ArticleItem__Title').text().trim(),
+    selector: '.news-feed-item',
+    title: el => el.find('.news-feed-title').text().trim(),
     url: el => el.find('a').attr('href'),
-    date: el => el.find('.ArticleItem__Date').text().trim()
+    date: el => el.find('.news-feed-date').text().trim()
   },
   {
     name: 'F1Technical',
@@ -36,7 +36,7 @@ const sources = [
         const partialUrl = source.url(element);
         const date = source.date(element);
 
-        if (!partialUrl || !title) return; // Validasi penting!
+        if (!partialUrl || !title) return;
 
         const href = source.base + partialUrl;
 
