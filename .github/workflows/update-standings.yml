@@ -23,4 +23,5 @@ jobs:
         git config user.email "github-actions@github.com"
         git add standings.json
         git commit -m "Update F1 standings automatically"
-        git push
+        git push https://x-access-token:$TOKEN@github.com/${{ github.repository }}.git HEAD:main
+        )
