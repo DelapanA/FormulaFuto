@@ -4,13 +4,13 @@ const fs = require('fs');
 const parser = new Parser();
 const sources = [
   {
-    name: "GPFans",
-    url: "https://www.gpfans.com/en/rss/",
+    name: "F1 Feeder",
+    url: "https://f1reader.com/rss.xml",
     filter: /red bull|verstappen/i
   },
   {
-    name: "F1NewsUK",
-    url: "https://www.formula1news.co.uk/feed/",
+    name: "F1 Technical",
+    url: "https://www.f1technical.net/news/rss.php",
     filter: /red bull|verstappen/i
   }
 ];
