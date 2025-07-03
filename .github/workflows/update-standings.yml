@@ -21,6 +21,6 @@ jobs:
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git add standings.json
+        git add standings.json || true
         git diff --cached --quiet || git commit -m "Update F1 standings automatically"
         git push
