@@ -159,7 +159,37 @@
     }
   });
   </script>
+<script>
+  function toggleTheme() {
+    document.documentElement.classList.toggle('dark');
+  }
+// Fungsi toggle full schedule
+function toggleFullSchedule() {
+  const container = document.getElementById('fullSchedule');
+  container.classList.toggle('hidden');
 
+  if (!container.classList.contains('loaded')) {
+    fetch('races.json')
+      .then(res => res.json())
+      .then(races => {
+        races.forEach(race => {
+          const card = document.createElement('div');
+          card.className = `rounded-xl overflow-hidden shadow-lg mb-4 ${race.status === 'current' ? 'ring-4 ring-yellow-400' : 'bg-gray-900'}`;
+          card.innerHTML = `
+            <img src="${race.image}" alt="${race.name} GP" class="w-full h-40 object-cover" />
+            <div class="p-4">
+              <h3 class="text-yellow-400 text-sm font-semibold mb-1">ROUND ${race.round}</h3>
+              <h4 class="text-xl font-bold mb-2">${race.name}</h4>
+              <p class="text-sm text-gray-300">${race.date}</p>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+        container.classList.add('loaded');
+      });
+  }
+}
+</script>
 <section class="mt-10">
   <h2 class="text-xl font-semibold mb-4">Jadwal Balapan F1 2025</h2>
 
