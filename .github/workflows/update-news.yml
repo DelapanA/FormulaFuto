@@ -2,7 +2,7 @@ name: Auto Update Red Bull News
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Tiap 6 jam
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git add redbull-news.json
-        git commit -m "Update Red Bull news automatically"
-        git push https://x-access-token:$TOKEN@github.com/${{ github.repository }}.git HEAD:main
-        )
+        git add redbull-news.json || true
+        git diff --cached --quiet || git commit -m "Update Red Bull news automatically"
+        git pull --rebase origin main
+        git push
