@@ -32,6 +32,9 @@ jobs:
 
     - name: Jalankan Puppeteer Scraper
       run: node fetch-redbull-news-puppeteer.js
+    
+    - name: Jalankan Puppeteer Scraper
+      run: node fetch-debug-news.js
 
     - name: Jalankan Bash Scraper
       run: bash scripts/run-news-scraper.sh
