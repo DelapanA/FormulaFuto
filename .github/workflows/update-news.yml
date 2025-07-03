@@ -1,8 +1,8 @@
-name: Auto Update Red Bull News
+name: Auto Update Red Bull News (Scraper)
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *'  # Setiap 6 jam
   workflow_dispatch:
 
 jobs:
@@ -10,20 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '20'
-    - run: npm install rss-parser
-    - name: Jalankan Script Update
-      run: node fetch-redbull-news.js
+
+    - name: Install Dependencies
+      run: npm install axios cheerio
+
+    - name: Jalankan Scraper
+      run: node fetch-redbull-news-cheerio.js
+
     - name: Commit & Push
       run: |
-       git config user.name "github-actions"
-       git config user.email "github-actions@github.com"
-       git add redbull-news.json || true
-       git diff --cached --quiet || git commit -m "Update Red Bull news automatically"
-       git stash
-       git pull origin main
-       git stash pop || true
-       git push
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add redbull-news.json || true
+        git diff --cached --quiet || git commit -m "Update Red Bull news via scraper"
+        git stash
+        git pull origin main
+        git stash pop || true
+        git push
