@@ -43,7 +43,25 @@ const puppeteer = require('puppeteer');
     console.error('Error fetching F1Technical:', err.message);
   }
 
+  // PlanetF1
+  try {
+    await page.goto('https://www.planetf1.com/latest-news', { waitUntil: 'networkidle2' });
+    const planetF1Data = await page.evaluate(() => {
+      const articles = Array.from(document.querySelectorAll('article'));
+      return articles.map(article => {
+        const a = article.querySelector('a');
+        const title = article.innerText?.split('\n')[0]?.trim();
+        const url = a?.href;
+        const date = new Date().toISOString().split('T')[0];
+        return { title, url, date, source: 'PlanetF1' };
+      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
+    });
+    results.push(...planetF1Data);
+  } catch (err) {
+    console.error('Error fetching PlanetF1:', err.message);
+  }
+
   await browser.close();
-  fs.writeFileSync('redbull-news.json', JSON.stringify(results.slice(0, 10), null, 2));
-  console.log('✅ Puppeteer scrape complete. News items:', results.length);
+  fs.writeFileSync('redbull-news.json', JSON.stringify(results.slice(0, 15), null, 2));
+  console.log('✅ Scrape selesai. Total berita:', results.length);
 })();
