@@ -51,6 +51,12 @@
       </ul>
     </section>
 
+    <section id="news-section">
+        <h2 class="text-xl font-semibold mb-4">Berita Terbaru Red Bull</h2>
+        <ul id="news-list" class="list-disc ml-6 space-y-2 text-sm text-white"></ul>
+    </section>
+
+
     <!-- Slider Jadwal Balapan -->
     <section class="mt-10">
       <h2 class="text-xl font-semibold mb-4">Jadwal Balapan F1 2025</h2>
@@ -210,6 +216,20 @@
       }
     });
   });
+  
+  fetch('redbull-news.json')
+  .then(res => res.json())
+  .then(data => {
+    const list = document.getElementById('news-list');
+    if (!list) return;
+    data.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="${item.url}" target="_blank" class="text-yellow-300 underline">${item.title}</a>
+        <span class="text-gray-400">(${item.source})</span>`;
+      list.appendChild(li);
+    });
+  })
+  .catch(err => console.error("Gagal memuat berita:", err));
 </script>
 </body>
 </html>
