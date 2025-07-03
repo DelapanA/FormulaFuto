@@ -33,6 +33,9 @@ jobs:
     - name: Jalankan Puppeteer Scraper
       run: node fetch-redbull-news-puppeteer.js
 
+    - name: Jalankan Bash Scraper
+      run: bash scripts/run-news-scraper.sh
+
     - name: Commit & Push
       run: |
         git config user.name "github-actions"
