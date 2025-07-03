@@ -33,8 +33,13 @@ const sources = [
       $(source.selector).each((i, el) => {
         const element = $(el);
         const title = source.title(element);
-        const href = source.base + source.url(element);
+        const partialUrl = source.url(element);
         const date = source.date(element);
+
+        if (!partialUrl || !title) return; // Validasi penting!
+
+        const href = source.base + partialUrl;
+
         if (/red bull|verstappen/i.test(title)) {
           news.push({ title, url: href, date, source: source.name });
         }
@@ -45,4 +50,5 @@ const sources = [
   }
 
   fs.writeFileSync('redbull-news.json', JSON.stringify(news.slice(0, 10), null, 2));
+  console.log('✅ redbull-news.json updated with', news.length, 'items.');
 })();
