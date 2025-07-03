@@ -1,0 +1,32 @@
+[
+  {
+    "pos": 1,
+    "driver": "Oscar Piastri",
+    "team": "McLaren",
+    "points": 216
+  },
+  {
+    "pos": 2,
+    "driver": "Lando Norris",
+    "team": "McLaren",
+    "points": 201
+  },
+  {
+    "pos": 3,
+    "driver": "Max Verstappen",
+    "team": "Red Bull",
+    "points": 155
+  },
+  {
+    "pos": 4,
+    "driver": "George Russell",
+    "team": "Mercedes",
+    "points": 146
+  },
+  {
+    "pos": 5,
+    "driver": "Charles Leclerc",
+    "team": "Ferrari",
+    "points": 119
+  }
+]

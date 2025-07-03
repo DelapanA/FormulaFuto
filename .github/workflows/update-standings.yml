@@ -1,0 +1,26 @@
+name: Auto Update F1 Standings
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # setiap hari jam 10 pagi WIB
+  workflow_dispatch:
+
+jobs:
+  update-standings:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    - run: npm install axios
+    - name: Jalankan Script Update
+      run: node fetch-standings.js
+    - name: Commit & Push
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add standings.json
+        git commit -m "Update F1 standings automatically"
+        git push
