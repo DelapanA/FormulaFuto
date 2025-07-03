@@ -1,4 +1,4 @@
-name: Auto Update Red Bull News (Scraper)
+name: Auto Update Red Bull News (Multi-Sumber)
 
 on:
   schedule:
@@ -8,6 +8,7 @@ on:
 jobs:
   update-news:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v3
 
@@ -19,15 +20,15 @@ jobs:
     - name: Install Dependencies
       run: npm install axios cheerio
 
-    - name: Jalankan Scraper
-      run: node fetch-redbull-news-cheerio.js
+    - name: Jalankan Scraper Multi-Sumber
+      run: node fetch-redbull-news-multisource.js
 
     - name: Commit & Push
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git add redbull-news.json || true
-        git diff --cached --quiet || git commit -m "Update Red Bull news via scraper"
+        git diff --cached --quiet || git commit -m "Update Red Bull news from multiple sources"
         git stash
         git pull origin main
         git stash pop || true
