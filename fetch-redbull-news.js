@@ -1,17 +1,16 @@
-// Simpan sebagai fetch-redbull-news.js
 const Parser = require('rss-parser');
 const fs = require('fs');
 
 const parser = new Parser();
 const sources = [
   {
-    name: "GPBlog",
-    url: "https://www.gpblog.com/en/news/rss",
+    name: "F1 Feeder",
+    url: "https://f1reader.com/rss.xml",
     filter: /red bull|verstappen/i
   },
   {
-    name: "PlanetF1",
-    url: "https://www.planetf1.com/feed",
+    name: "F1 Technical",
+    url: "https://www.f1technical.net/news/rss.php",
     filter: /red bull|verstappen/i
   }
 ];
@@ -33,7 +32,7 @@ const sources = [
         }));
       allItems.push(...filtered);
     } catch (err) {
-      console.error("Error fetching", source.name, err);
+      console.error("Error fetching", source.name, err.message);
     }
   }
 
