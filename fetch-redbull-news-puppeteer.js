@@ -20,7 +20,7 @@ const puppeteer = require('puppeteer');
         const url = a?.href;
         const date = a?.querySelector('.news-feed-date')?.innerText?.trim();
         return { title, url, date, source: 'GPFans' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
+      }).filter(item => item.title)
     });
     results.push(...gpFansData);
   } catch (err) {
@@ -38,7 +38,7 @@ const puppeteer = require('puppeteer');
         const url = a?.href;
         const date = new Date().toISOString().split('T')[0];
         return { title, url, date, source: 'F1Technical' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
+      }).filter(item => item.title)
     });
     results.push(...f1TechData);
   } catch (err) {
@@ -56,7 +56,7 @@ const puppeteer = require('puppeteer');
         const url = a?.href;
         const date = new Date().toISOString().split('T')[0];
         return { title, url, date, source: 'PlanetF1' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
+      }).filter(item => item.title)
     });
     results.push(...planetF1Data);
   } catch (err) {
@@ -73,7 +73,7 @@ const puppeteer = require('puppeteer');
         const url = article.href;
         const date = new Date().toISOString().split('T')[0];
         return { title, url, date, source: 'Motorsport.com' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
+      }).filter(item => item.title)
     });
     results.push(...motorsportData);
   } catch (err) {
@@ -90,7 +90,7 @@ const puppeteer = require('puppeteer');
         const url = article.href;
         const date = new Date().toISOString().split('T')[0];
         return { title, url, date, source: 'RacingNews365' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
+      }).filter(item => item.title)
     });
     results.push(...rnData);
   } catch (err) {
