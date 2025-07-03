@@ -213,19 +213,33 @@
     });
   });
   
-  fetch('redbull-news.json')
-  .then(res => res.json())
+fetch('redbull-news.json')
+  .then(response => response.json())
   .then(data => {
     const list = document.getElementById('news-list');
-    if (!list) return;
+    if (!list || !Array.isArray(data)) return;
+
+    if (data.length === 0) {
+      list.innerHTML = "<li class='text-gray-400'>Belum ada berita terbaru saat ini.</li>";
+      return;
+    }
+
     data.forEach(item => {
       const li = document.createElement('li');
-      li.innerHTML = `<a href="${item.url}" target="_blank" class="text-yellow-300 underline">${item.title}</a>
-        <span class="text-gray-400">(${item.source})</span>`;
+      li.innerHTML = `
+        <a href="${item.url}" target="_blank" class="text-yellow-300 underline hover:text-yellow-200 transition">
+          ${item.title}
+        </a>
+        <span class="text-gray-400 ml-2">(${item.date})</span>
+      `;
       list.appendChild(li);
     });
   })
-  .catch(err => console.error("Gagal memuat berita:", err));
+  .catch(err => {
+    document.getElementById('news-list').innerHTML =
+      "<li class='text-red-400'>Gagal memuat berita Red Bull.</li>";
+    console.error('Gagal memuat berita:', err);
+  });
 
   fetch('standings.json')
   .then(res => res.json())
