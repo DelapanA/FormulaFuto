@@ -98,6 +98,7 @@ const puppeteer = require('puppeteer');
   }
 
   await browser.close();
+
   fs.writeFileSync('redbull-news.json', JSON.stringify(results.slice(0, 20), null, 2));
   console.log('✅ Scrape selesai. Total berita:', results.length);
 })();

@@ -51,11 +51,12 @@
       </ul>
     </section>
 
-    <section id="news-section">
-        <h2 class="text-xl font-semibold mb-4">Berita Terbaru Red Bull</h2>
-        <ul id="news-list" class="list-disc ml-6 space-y-2 text-sm text-white"></ul>
+    <section id="news-section" class="mt-10">
+      <h2 class="text-xl font-semibold mb-4">Berita Terbaru Red Bull</h2>
+      <ul id="news-list" class="list-disc ml-6 space-y-2 text-sm text-white">
+        <li class="text-gray-400">Memuat berita...</li>
+      </ul>
     </section>
-
 
     <!-- Slider Jadwal Balapan -->
     <section class="mt-10">
@@ -219,6 +220,8 @@ fetch('redbull-news.json')
     const list = document.getElementById('news-list');
     if (!list || !Array.isArray(data)) return;
 
+    list.innerHTML = ""; // Kosongkan loading
+
     if (data.length === 0) {
       list.innerHTML = "<li class='text-gray-400'>Belum ada berita terbaru saat ini.</li>";
       return;
@@ -230,19 +233,17 @@ fetch('redbull-news.json')
         <a href="${item.url}" target="_blank" class="text-yellow-300 underline hover:text-yellow-200 transition">
           ${item.title}
         </a>
-        <span class="text-gray-400 ml-2">
-          (${item.date}${item.source ? ', ' + item.source : ''})
-        </span>
+        <span class="text-gray-400 ml-2 text-xs">(${item.source} • ${item.date})</span>
       `;
       list.appendChild(li);
     });
   })
   .catch(err => {
+    console.error('Gagal memuat berita:', err);
     document.getElementById('news-list').innerHTML =
       "<li class='text-red-400'>Gagal memuat berita Red Bull.</li>";
-    console.error('Gagal memuat berita:', err);
   });
-
+  
   fetch('standings.json')
   .then(res => res.json())
   .then(data => {
