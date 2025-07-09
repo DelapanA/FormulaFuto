@@ -1,6 +1,10 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
+async function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function scrapeNews(site) {
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -12,7 +16,7 @@ async function scrapeNews(site) {
 
   try {
     await page.goto(site.url, { waitUntil: 'networkidle0', timeout: 60000 });
-    await page.waitForTimeout(3000); // Beri waktu render JavaScript
+    await delay(3000); // Ganti waitForTimeout
 
     const count = await page.$$eval(site.articleSelector, els => els.length);
     console.log(`📌 ${site.name}: ditemukan ${count} elemen '${site.articleSelector}'`);

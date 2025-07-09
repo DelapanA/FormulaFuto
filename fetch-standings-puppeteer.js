@@ -1,6 +1,10 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 (async () => {
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -15,7 +19,7 @@ const fs = require('fs');
       timeout: 60000
     });
 
-    await page.waitForTimeout(3000);
+    await delay(3000); // Ganti waitForTimeout manual
     await page.waitForSelector('.resultsarchive-table tbody tr', { timeout: 15000 });
 
     const data = await page.evaluate(() => {
