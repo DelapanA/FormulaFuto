@@ -98,7 +98,8 @@ const puppeteer = require('puppeteer');
   }
 
   await browser.close();
-
+  console.log(JSON.stringify(results, null, 2));
   fs.writeFileSync('redbull-news.json', JSON.stringify(results.slice(0, 20), null, 2));
   console.log('✅ Scrape selesai. Total berita:', results.length);
+  console.log("Berita berhasil disimpan di redbull-news.json");
 })();
