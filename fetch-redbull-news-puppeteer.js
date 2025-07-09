@@ -1,120 +1,89 @@
-const fs = require('fs');
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
-(async () => {
+async function scrapeNews(site) {
   const browser = await puppeteer.launch({
     headless: 'new',
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
+
   const page = await browser.newPage();
-  const results = [];
+  let news = [];
 
-  // GPFans
   try {
-    await page.goto('https://www.gpfans.com/en/news/', { waitUntil: 'networkidle2' });
-    const gpFansData = await page.evaluate(() => {
-      const articles = Array.from(document.querySelectorAll('.news-feed-item'));
-      return articles.map(article => {
-        const a = article.querySelector('a');
-        const title = a?.querySelector('.news-feed-title')?.innerText?.trim();
-        const url = a?.href;
-        const date = a?.querySelector('.news-feed-date')?.innerText?.trim();
-        return { title, url, date, source: 'GPFans' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
-    });
-    console.log("Judul ditemukan:", title);
-    console.log("URL:", url);
-    console.log("Tanggal:", date);
-    results.push(...gpFansData);
-  } catch (err) {
-    console.error('Error fetching GPFans:', err.message);
-  }
+    await page.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 60000 });
 
-  // F1Technical
-  try {
-    await page.goto('https://www.f1technical.net/news', { waitUntil: 'networkidle2' });
-    const f1TechData = await page.evaluate(() => {
-      const articles = Array.from(document.querySelectorAll('.news-article'));
-      return articles.map(article => {
-        const a = article.querySelector('a');
-        const title = a?.innerText?.trim();
-        const url = a?.href;
-        const date = new Date().toISOString().split('T')[0];
-        return { title, url, date, source: 'F1Technical' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
-    });
-    console.log("Judul ditemukan:", title);
-    console.log("URL:", url);
-    console.log("Tanggal:", date);
-    results.push(...f1TechData);
-  } catch (err) {
-    console.error('Error fetching F1Technical:', err.message);
-  }
+    news = await page.evaluate((site) => {
+      const items = [];
+      document.querySelectorAll(site.articleSelector).forEach(el => {
+        const title = el.querySelector(site.titleSelector)?.innerText?.trim();
+        const link = el.querySelector(site.linkSelector)?.href;
 
-  // PlanetF1
-  try {
-    await page.goto('https://www.planetf1.com/latest-news', { waitUntil: 'networkidle2' });
-    const planetF1Data = await page.evaluate(() => {
-      const articles = Array.from(document.querySelectorAll('article'));
-      return articles.map(article => {
-        const a = article.querySelector('a');
-        const title = article.innerText?.split('\n')[0]?.trim();
-        const url = a?.href;
-        const date = new Date().toISOString().split('T')[0];
-        return { title, url, date, source: 'PlanetF1' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
-    });
-    console.log("Judul ditemukan:", title);
-    console.log("URL:", url);
-    console.log("Tanggal:", date);
-    results.push(...planetF1Data);
-  } catch (err) {
-    console.error('Error fetching PlanetF1:', err.message);
-  }
+        if (title && link) {
+          items.push({
+            source: site.name,
+            title,
+            url: link,
+            date: new Date().toISOString().slice(0, 10)
+          });
+        }
+      });
+      return items;
+    }, site);
 
-  // Motorsport.com
-  try {
-    await page.goto('https://www.motorsport.com/f1/news/', { waitUntil: 'networkidle2' });
-    const motorsportData = await page.evaluate(() => {
-      const articles = Array.from(document.querySelectorAll('a.mosaic-article-title'));
-      return articles.map(article => {
-        const title = article.innerText?.trim();
-        const url = article.href;
-        const date = new Date().toISOString().split('T')[0];
-        return { title, url, date, source: 'Motorsport.com' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
-    });
-    console.log("Judul ditemukan:", title);
-    console.log("URL:", url);
-    console.log("Tanggal:", date);
-    results.push(...motorsportData);
   } catch (err) {
-    console.error('Error fetching Motorsport.com:', err.message);
-  }
-
-  // RacingNews365
-  try {
-    await page.goto('https://racingnews365.com/f1-news', { waitUntil: 'networkidle2' });
-    const rnData = await page.evaluate(() => {
-      const articles = Array.from(document.querySelectorAll('.article-listing__title a'));
-      return articles.map(article => {
-        const title = article.innerText?.trim();
-        const url = article.href;
-        const date = new Date().toISOString().split('T')[0];
-        return { title, url, date, source: 'RacingNews365' };
-      }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
-    });
-    console.log("Judul ditemukan:", title);
-    console.log("URL:", url);
-    console.log("Tanggal:", date);
-    results.push(...rnData);
-  } catch (err) {
-    console.error('Error fetching RacingNews365:', err.message);
+    console.error(`❌ Error fetching ${site.name}:`, err.message);
   }
 
   await browser.close();
-  console.log(JSON.stringify(results, null, 2));
-  fs.writeFileSync('redbull-news.json', JSON.stringify(results.slice(0, 20), null, 2));
-  console.log('✅ Scrape selesai. Total berita:', results.length);
-  console.log("Berita berhasil disimpan di redbull-news.json");
+  return news;
+}
+
+(async () => {
+  const sources = [
+    {
+      name: 'GPFans',
+      url: 'https://www.gpfans.com/en/f1-news/red-bull/',
+      articleSelector: '.article-list .article',
+      titleSelector: 'h2',
+      linkSelector: 'a'
+    },
+    {
+      name: 'F1Technical',
+      url: 'https://www.f1technical.net/news/by/team/Red%20Bull',
+      articleSelector: '.newsitem',
+      titleSelector: '.title',
+      linkSelector: 'a'
+    },
+    {
+      name: 'PlanetF1',
+      url: 'https://www.planetf1.com/tag/red-bull',
+      articleSelector: '.td_module_10',
+      titleSelector: '.entry-title',
+      linkSelector: 'a'
+    },
+    {
+      name: 'Motorsport',
+      url: 'https://www.motorsport.com/f1/news/red-bull/',
+      articleSelector: '.ms-item',
+      titleSelector: '.ms-item__title',
+      linkSelector: 'a'
+    },
+    {
+      name: 'RacingNews365',
+      url: 'https://racingnews365.com/f1/teams/red-bull-racing',
+      articleSelector: '.news-list-item',
+      titleSelector: 'h3',
+      linkSelector: 'a'
+    }
+  ];
+
+  let allNews = [];
+  for (const site of sources) {
+    const news = await scrapeNews(site);
+    allNews = allNews.concat(news);
+  }
+
+  fs.writeFileSync('redbull-news.json', JSON.stringify(allNews, null, 2));
+  console.log(`✅ Scrape selesai. Total berita: ${allNews.length}`);
 })();
