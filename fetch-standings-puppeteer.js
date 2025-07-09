@@ -11,11 +11,12 @@ const fs = require('fs');
 
   try {
     await page.goto('https://www.formula1.com/en/results.html/2025/drivers.html', {
-      waitUntil: 'domcontentloaded',
+      waitUntil: 'networkidle0',
       timeout: 60000
     });
 
-    await page.waitForSelector('.resultsarchive-table tbody tr', { timeout: 10000 });
+    await page.waitForTimeout(3000);
+    await page.waitForSelector('.resultsarchive-table tbody tr', { timeout: 15000 });
 
     const data = await page.evaluate(() => {
       const rows = document.querySelectorAll('.resultsarchive-table tbody tr');

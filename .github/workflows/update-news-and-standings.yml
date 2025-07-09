@@ -1,9 +1,9 @@
-name: Update News & Standings
+name: 🔄 Update News & Standings
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Setiap 6 jam sekali
-  workflow_dispatch:       # Bisa juga dijalankan manual di tab Actions
+    - cron: '0 */6 * * *'   # Setiap 6 jam
+  workflow_dispatch:        # Bisa dijalankan manual
 
 jobs:
   update-data:
@@ -21,13 +21,13 @@ jobs:
       - name: Install Puppeteer
         run: npm install puppeteer
 
-      - name: Jalankan Puppeteer untuk berita Red Bull
+      - name: Fetch Red Bull News
         run: node fetch-redbull-news-puppeteer.js
 
-      - name: Jalankan Puppeteer untuk klasemen resmi Formula1.com
+      - name: Fetch F1 Standings
         run: node fetch-standings-puppeteer.js
 
-      - name: Commit dan Push jika ada perubahan
+      - name: Commit & Push if data changed
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"

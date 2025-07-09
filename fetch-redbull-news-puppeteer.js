@@ -11,9 +11,13 @@ async function scrapeNews(site) {
   let news = [];
 
   try {
-    await page.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.goto(site.url, { waitUntil: 'networkidle0', timeout: 60000 });
+    await page.waitForTimeout(3000); // Beri waktu render JavaScript
 
-    news = await page.evaluate((site) => {
+    const count = await page.$$eval(site.articleSelector, els => els.length);
+    console.log(`📌 ${site.name}: ditemukan ${count} elemen '${site.articleSelector}'`);
+
+    news = await page.evaluate(site => {
       const items = [];
       document.querySelectorAll(site.articleSelector).forEach(el => {
         const title = el.querySelector(site.titleSelector)?.innerText?.trim();
@@ -44,22 +48,15 @@ async function scrapeNews(site) {
     {
       name: 'GPFans',
       url: 'https://www.gpfans.com/en/f1-news/red-bull/',
-      articleSelector: '.article-list .article',
-      titleSelector: 'h2',
-      linkSelector: 'a'
-    },
-    {
-      name: 'F1Technical',
-      url: 'https://www.f1technical.net/news/by/team/Red%20Bull',
-      articleSelector: '.newsitem',
-      titleSelector: '.title',
-      linkSelector: 'a'
+      articleSelector: '.article-preview__text',
+      titleSelector: '.article-preview__title',
+      linkSelector: 'a.article-preview__link'
     },
     {
       name: 'PlanetF1',
       url: 'https://www.planetf1.com/tag/red-bull',
-      articleSelector: '.td_module_10',
-      titleSelector: '.entry-title',
+      articleSelector: '.td-module-thumb',
+      titleSelector: 'a',
       linkSelector: 'a'
     },
     {
@@ -70,10 +67,17 @@ async function scrapeNews(site) {
       linkSelector: 'a'
     },
     {
+      name: 'F1Technical',
+      url: 'https://www.f1technical.net/news/by/team/Red%20Bull',
+      articleSelector: '.newsitem',
+      titleSelector: '.title',
+      linkSelector: 'a'
+    },
+    {
       name: 'RacingNews365',
       url: 'https://racingnews365.com/f1/teams/red-bull-racing',
-      articleSelector: '.news-list-item',
-      titleSelector: 'h3',
+      articleSelector: '.article-card',
+      titleSelector: '.article-card__title',
       linkSelector: 'a'
     }
   ];
