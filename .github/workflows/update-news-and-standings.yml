@@ -2,8 +2,8 @@ name: Update News & Standings
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Setiap 6 jam
-  workflow_dispatch:       # Bisa manual lewat GitHub Actions tab
+    - cron: '0 */6 * * *'  # Setiap 6 jam sekali
+  workflow_dispatch:       # Bisa juga dijalankan manual di tab Actions
 
 jobs:
   update-data:
@@ -21,21 +21,13 @@ jobs:
       - name: Install Puppeteer
         run: npm install puppeteer
 
-      - name: Run Puppeteer for Red Bull News
+      - name: Jalankan Puppeteer untuk berita Red Bull
         run: node fetch-redbull-news-puppeteer.js
 
-      - name: Fetch F1 Standings from Ergast API
-        run: |
-          curl https://ergast.com/api/f1/current/driverStandings.json \
-          | jq '.MRData.StandingsTable.StandingsLists[0].DriverStandings |
-            map({
-              position: .position,
-              driver: (.Driver.givenName + " " + .Driver.familyName),
-              constructor: .Constructors[0].name,
-              points: .points
-            })' > standings.json
+      - name: Jalankan Puppeteer untuk klasemen resmi Formula1.com
+        run: node fetch-standings-puppeteer.js
 
-      - name: Commit and Push Changes
+      - name: Commit dan Push jika ada perubahan
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
