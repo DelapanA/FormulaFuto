@@ -213,17 +213,17 @@
       }
     });
   });
-  
+
 fetch('redbull-news.json')
   .then(response => response.json())
   .then(data => {
     const list = document.getElementById('news-list');
     if (!list || !Array.isArray(data)) return;
 
-    list.innerHTML = ""; // Kosongkan loading
+    list.innerHTML = ""; // Bersihkan loading
 
     if (data.length === 0) {
-      list.innerHTML = "<li class='text-gray-400'>Belum ada berita terbaru saat ini.</li>";
+      list.innerHTML = "<li class='text-gray-400'>Belum ada berita Red Bull saat ini.</li>";
       return;
     }
 

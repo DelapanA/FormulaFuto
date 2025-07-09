@@ -1,0 +1,49 @@
+name: Update News & Standings
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Setiap 6 jam
+  workflow_dispatch:       # Bisa manual lewat GitHub Actions tab
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Puppeteer
+        run: npm install puppeteer
+
+      - name: Run Puppeteer for Red Bull News
+        run: node fetch-redbull-news-puppeteer.js
+
+      - name: Fetch F1 Standings from Ergast API
+        run: |
+          curl https://ergast.com/api/f1/current/driverStandings.json \
+          | jq '.MRData.StandingsTable.StandingsLists[0].DriverStandings |
+            map({
+              position: .position,
+              driver: (.Driver.givenName + " " + .Driver.familyName),
+              constructor: .Constructors[0].name,
+              points: .points
+            })' > standings.json
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          if git diff --quiet redbull-news.json standings.json; then
+            echo "✅ Tidak ada perubahan pada JSON. Skip commit."
+          else
+            git add redbull-news.json standings.json
+            git commit -m "🔄 Update Berita Red Bull & Klasemen F1"
+            git push
+          fi

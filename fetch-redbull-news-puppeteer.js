@@ -22,6 +22,9 @@ const puppeteer = require('puppeteer');
         return { title, url, date, source: 'GPFans' };
       }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
     });
+    console.log("Judul ditemukan:", title);
+    console.log("URL:", url);
+    console.log("Tanggal:", date);
     results.push(...gpFansData);
   } catch (err) {
     console.error('Error fetching GPFans:', err.message);
@@ -40,6 +43,9 @@ const puppeteer = require('puppeteer');
         return { title, url, date, source: 'F1Technical' };
       }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
     });
+    console.log("Judul ditemukan:", title);
+    console.log("URL:", url);
+    console.log("Tanggal:", date);
     results.push(...f1TechData);
   } catch (err) {
     console.error('Error fetching F1Technical:', err.message);
@@ -58,6 +64,9 @@ const puppeteer = require('puppeteer');
         return { title, url, date, source: 'PlanetF1' };
       }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
     });
+    console.log("Judul ditemukan:", title);
+    console.log("URL:", url);
+    console.log("Tanggal:", date);
     results.push(...planetF1Data);
   } catch (err) {
     console.error('Error fetching PlanetF1:', err.message);
@@ -75,6 +84,9 @@ const puppeteer = require('puppeteer');
         return { title, url, date, source: 'Motorsport.com' };
       }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
     });
+    console.log("Judul ditemukan:", title);
+    console.log("URL:", url);
+    console.log("Tanggal:", date);
     results.push(...motorsportData);
   } catch (err) {
     console.error('Error fetching Motorsport.com:', err.message);
@@ -92,6 +104,9 @@ const puppeteer = require('puppeteer');
         return { title, url, date, source: 'RacingNews365' };
       }).filter(item => item.title && /red bull|verstappen/i.test(item.title));
     });
+    console.log("Judul ditemukan:", title);
+    console.log("URL:", url);
+    console.log("Tanggal:", date);
     results.push(...rnData);
   } catch (err) {
     console.error('Error fetching RacingNews365:', err.message);
