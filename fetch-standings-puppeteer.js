@@ -19,8 +19,8 @@ function delay(ms) {
       timeout: 60000
     });
 
-    await delay(3000); // Ganti waitForTimeout manual
-    await page.waitForSelector('.resultsarchive-table tbody tr', { timeout: 15000 });
+    await delay(6000); // Beri waktu penuh untuk load konten
+    await page.waitForSelector('.resultsarchive-table tbody tr', { timeout: 30000 });
 
     const data = await page.evaluate(() => {
       const rows = document.querySelectorAll('.resultsarchive-table tbody tr');

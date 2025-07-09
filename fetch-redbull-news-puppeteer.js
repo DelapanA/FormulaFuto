@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
-async function delay(ms) {
+function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -16,7 +16,7 @@ async function scrapeNews(site) {
 
   try {
     await page.goto(site.url, { waitUntil: 'networkidle0', timeout: 60000 });
-    await delay(3000); // Ganti waitForTimeout
+    await delay(4000); // Beri waktu render JavaScript
 
     const count = await page.$$eval(site.articleSelector, els => els.length);
     console.log(`📌 ${site.name}: ditemukan ${count} elemen '${site.articleSelector}'`);
@@ -52,15 +52,15 @@ async function scrapeNews(site) {
     {
       name: 'GPFans',
       url: 'https://www.gpfans.com/en/f1-news/red-bull/',
-      articleSelector: '.article-preview__text',
-      titleSelector: '.article-preview__title',
-      linkSelector: 'a.article-preview__link'
+      articleSelector: 'article.card',
+      titleSelector: 'h3.card-title',
+      linkSelector: 'a.card-link'
     },
     {
       name: 'PlanetF1',
       url: 'https://www.planetf1.com/tag/red-bull',
-      articleSelector: '.td-module-thumb',
-      titleSelector: 'a',
+      articleSelector: '.td_module_10',
+      titleSelector: 'h3.entry-title',
       linkSelector: 'a'
     },
     {
@@ -80,8 +80,8 @@ async function scrapeNews(site) {
     {
       name: 'RacingNews365',
       url: 'https://racingnews365.com/f1/teams/red-bull-racing',
-      articleSelector: '.article-card',
-      titleSelector: '.article-card__title',
+      articleSelector: '.news-listing__item',
+      titleSelector: '.news-listing__title',
       linkSelector: 'a'
     }
   ];
